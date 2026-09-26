@@ -1,0 +1,73 @@
+<Window x:Class="Brightness.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Brightness"
+        Icon="Brightness.ico"
+        Width="310" Height="45"
+        MinWidth="150" MinHeight="24"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        FontFamily="Yu Gothic UI" FontSize="13.33">
+
+    <!-- 枠なしのまま縁のドラッグでサイズ変更できるようにする -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <!-- マウスオーバー/押下時に重ねる半透明の層 (強調表示の色を残すため) -->
+                                <Border x:Name="overlay" Background="White" Opacity="0" />
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="overlay" Property="Opacity" Value="0.35" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="overlay" Property="Background" Value="Black" />
+                                <Setter TargetName="overlay" Property="Opacity" Value="0.15" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="topMostMenuItem" Header="最前面に表示" IsCheckable="True" IsChecked="True" Click="topMostMenuItem_Click" />
+            <MenuItem x:Name="lockMenuItem" Header="固定する" IsCheckable="True" Click="lockMenuItem_Click" />
+            <Separator />
+            <MenuItem Header="終了" Click="exitMenuItem_Click" />
+        </ContextMenu>
+    </Window.ContextMenu>
+
+    <!-- ボタンをウィンドウ幅いっぱいに均等に並べる -->
+    <UniformGrid x:Name="buttonGrid" Rows="1"
+                 ButtonBase.Click="presetButton_Click"
+                 PreviewMouseLeftButtonDown="buttonGrid_PreviewMouseLeftButtonDown"
+                 PreviewMouseMove="buttonGrid_PreviewMouseMove">
+        <Button Content="0%" Tag="0" />
+        <Button Content="25%" Tag="25" />
+        <Button Content="50%" Tag="50" />
+        <Button Content="75%" Tag="75" />
+        <Button Content="100%" Tag="100" />
+    </UniformGrid>
+</Window>
